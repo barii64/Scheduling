@@ -7,11 +7,38 @@ import { LoginForm } from './LoginForm';
 import { ProfileForm } from './Profile';
 import '../style/LoadingAnimation.css';
 import { LoadingAnimation } from './Loading';
+import Cookies from 'js-cookie';
 
 type UserProps =
     UserStore.UserState &
     typeof UserStore.actionCreators &
     RouteComponentProps<{}>;
+
+const getUserData = async (token: string) => {
+    const query = JSON.stringify({
+        query: `{
+        getUser{
+            name
+            surname
+            email
+            position
+            department
+            permissions
+        }
+        }`
+    });
+    
+    return fetch('/graphql', {
+        method: 'POST',
+        headers: {
+        'content-type': 'application/json',
+        'Authorization': `Bearer ${token}`
+        },
+        body: query
+    })
+    .then(data => data.json());
+    };
+    
 
 class User extends React.PureComponent<UserProps, { isLoading: boolean, showError: boolean }>{
     public state = {
@@ -19,23 +46,38 @@ class User extends React.PureComponent<UserProps, { isLoading: boolean, showErro
         showError: false
     };
     
-    public render(){
-        if(!this.props.logged){
-            if(!this.state.isLoading){
-                    return (
-                        <LoginForm logIn = {(loginData: UserStore.UserData) => this.props.logIn(loginData)}
-                            toggleLoading = {this.toggleLoading}
-                            setError = {(error: boolean) => this.setError(error)}
-                            showError = {this.state.showError}/>
-                    );
-                }
-            else{
-                return (<LoadingAnimation/>);
+    async componentDidMount(){
+        const token = Cookies.get('token');
+        
+        if(token){
+            
+            this.props.logIn(token);
+            const data = await getUserData(token);    
+            
+            if(data){
+                this.props.getData(data.data.getUser); 
             }
         }
-        else{
-            return (<ProfileForm logOut = {() => this.props.logOut()} user = {this.props.user}/>);
+      }
+
+    public render(){
+        
+        if(!this.props.logged){
+            if(!this.state.isLoading){
+                return (
+                    <LoginForm 
+                        logIn = {(token: string) => this.props.logIn(token)}
+                        toggleLoading = {this.toggleLoading}
+                        setError = {(error: boolean) => this.setError(error)}
+                        showError = {this.state.showError}
+                        token = {this.props.token}
+                        getData = {(userData: UserStore.UserData) => this.props.getData(userData)}/>
+                );
+            }
+            return (<LoadingAnimation/>);
         }
+        return (<ProfileForm logOut = {() => this.props.logOut()} user = {this.props.user}/>);
+        
     }
 
     private toggleLoading = () => {
@@ -43,6 +85,7 @@ class User extends React.PureComponent<UserProps, { isLoading: boolean, showErro
             isLoading: !this.state.isLoading
         });
     }
+
     private setError(error: boolean) {
         this.setState({
             showError: error

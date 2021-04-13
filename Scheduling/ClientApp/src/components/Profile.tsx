@@ -49,7 +49,6 @@ export const ProfileForm: React.FunctionComponent<ProfileProps> = ({ user, logOu
             </main>
         </React.Fragment>
     );
-    else
     return (
         <React.Fragment>
             
