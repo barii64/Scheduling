@@ -20,6 +20,9 @@ namespace Scheduling.GraphQl.Types
             Field(user => user.Position).Description("User position.");
             Field(user => user.Department).Description("User department.");
             Field(user => user.Permissions).Description("User permission.");
-       }
+            Field<ListGraphType<TimerHistoryType>>(nameof(User.TimerHistories), "(User timer history)");
+
+
+        }
     }
 }

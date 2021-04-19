@@ -15,6 +15,8 @@ namespace Scheduling.Domain
         public DbSet<User> Users { get; set; }
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<UserPermission> UserPermissions { get; set; }
+        public DbSet<TimerHistory> TimerHistories { get; set; }
+        public DbSet<UserTimerHistory> UserTimerHistories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -74,8 +76,21 @@ namespace Scheduling.Domain
                 PermisionId = 2,
                 UserId = 1321313
             });
+            modelBuilder.Entity<TimerHistory>().HasData(new TimerHistory
+            {
+                Id = 1,
+                StartTime = new DateTime(2021, 1, 1, 1, 1, 1),
+                FinishTime = new DateTime(2021, 1, 1, 1, 1, 2)
+            });
 
-            
+            modelBuilder.Entity<UserTimerHistory>().HasData(new UserTimerHistory
+            {
+                Id = 1,
+                TimerHistoryId = 1,
+                UserId = 1321313
+            });
+
+
 
         }
     }

@@ -79,6 +79,7 @@ namespace Scheduling
             services.AddScoped<Querys>();
             services.AddScoped<Mutations>();
             services.AddScoped<UserType>();
+            services.AddScoped<TimerHistoryType>();
 
             services.AddScoped<ISchema, GraphSchema>();
 

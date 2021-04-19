@@ -28,10 +28,17 @@ namespace Scheduling.GraphQl
                     string email = httpContext.HttpContext.User.Claims.First(claim => claim.Type == "Email").Value.ToString();
                     User user = userRepository.Get(email);
                     user.AddPermission(userRepository.GetPermission(email));
+                    user.AddTimerHistory(userRepository.GetTimerHistory(email));
                     return user;
                 }
             ).AuthorizeWith("Authenticated");
 
+            FieldAsync<ListGraphType<TimerHistoryType>, IReadOnlyCollection<TimerHistory>>(
+                "timeHistory",
+                resolve: ctx =>
+                {
+                    return userRepository.GetTimerHistory();
+                });
         }
     }
 }

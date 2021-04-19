@@ -1,5 +1,8 @@
 import * as React from 'react';
+import { useState } from 'react';
 import '../style/Login.css';
+import { authenticate } from '../webAPI/login';
+import { getUserData } from '../webAPI/user';
 
 type LoginProps = {
   logIn: Function,
@@ -7,78 +10,37 @@ type LoginProps = {
   setError: Function
   showError: boolean
   token: string | null,
-  getData: Function
+  setUserData: Function
 }
 
-const loginUserFetch = async (login: string, passsword: string) => {
-    const query = JSON.stringify({
-      query: `mutation {
-        authentication (email: "${login}" password: "${passsword}")
-      }`
-    });
-  
-   return fetch('/graphql', {
-      method: 'POST',
-      headers: {'content-type': 'application/json'},
-      body: query
-    })
-    .then(data => data.json());
-  };
 
-  const getUserData = async (token: string) => {
-    const query = JSON.stringify({
-      query: `{
-        getUser{
-          name
-          surname
-          email
-          position
-          department
-          permissions
-        }
-      }`
-    });
-  
-   return fetch('/graphql', {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: query
-    })
-    .then(data => data.json());
-  };
-
-export const LoginForm: React.FunctionComponent<LoginProps> = ({ logIn, toggleLoading, setError, showError, token, getData }) => {
+export const LoginForm: React.FunctionComponent<LoginProps> = ({ logIn, toggleLoading, setError, showError, token, setUserData }) => {
     
-    const handleSubmit = async (e: { preventDefault: () => void; }) => {
-        e.preventDefault();
+  const [login, setLogin] = useState("");
+  const [password, setPassword] = useState("");
 
-        let login = document.getElementById("input-login").value;
-        let password = document.getElementById("input-password").value;
+  const handleSubmit = async (e: { preventDefault: () => void; }) => {
+      e.preventDefault();
 
-
-        console.log(login, password);
-
-        if(!login || !password){
-          return setError(true);
-        }
-
-        const { data } = await loginUserFetch(login, password);
-        let userData = null;
-
-        if(!data || !data.authentication){
-          return setError(true);
-        }
-        
-        userData = await getUserData(data.authentication);
-        logIn(data);
-        
-        getData(userData.data.getUser); 
-        
-        setError(false);
+      if(!login || !password){
+        return setError(true);
       }
+      toggleLoading();
+      const { data } = await authenticate(login, password);
+      let userData = null;
+
+      if(!data || !data.authentication){
+        return setError(true);
+      }
+      
+      userData = await getUserData(data.authentication);
+      logIn(data.authentication);
+      
+      setUserData(userData.data.getUser); 
+      
+      setError(false);
+      toggleLoading();
+    }
 
     return (
         <React.Fragment>
@@ -89,9 +51,9 @@ export const LoginForm: React.FunctionComponent<LoginProps> = ({ logIn, toggleLo
                     </div>
                     <hr/>
                     <label className='login-form-label' htmlFor='input-login'>Login:</label>
-                    <input id='input-login' className='login-form-input' type='text' name='login' placeholder='Login' ></input>
+                    <input onInput={event => setLogin(event.currentTarget.value)} id='input-login' className='login-form-input' type='text' name='login' placeholder='Login' ></input>
                     <label className='login-form-label' htmlFor='input-password'>Password:</label>
-                    <input id='input-password' className='login-form-input' type='password' name='password' placeholder='Password'></input>
+                    <input onInput={event => setPassword(event.currentTarget.value)} id='input-password' className='login-form-input' type='password' name='password' placeholder='Password'></input>
                     <div className='error-message-container'>
                         <p className={'error-message' + (showError ? '' : ' hidden')}>Error! Incorrect login or passsword.</p>
                     </div>
