@@ -100,27 +100,52 @@ namespace Scheduling.Domain
 
             return TimerValues;
         }
-        public TimerHistory AddTimerFinishValue(DateTime? startTimeArg, DateTime? finishtTimeArg)
+        public TimerHistory EditTimerValue(int id, DateTime? startTime, DateTime? finishtTime)
         {
-            DateTime? startTime = null;
-            DateTime? finishtTime = null;
 
-            if (startTimeArg != null)
+            var dbRecord = Context.TimerHistories.Single(timerHistory => timerHistory.Id == id);
+
+            if (finishtTime == new DateTime())
             {
-                startTime = startTimeArg.Value;
+                finishtTime = dbRecord.FinishTime;
             }
-            
-            if (finishtTimeArg != null)
+
+            if (startTime == new DateTime())
             {
-                finishtTime = finishtTimeArg.Value;
+                startTime = dbRecord.StartTime;
             }
+            dbRecord.FinishTime = finishtTime;
+
+            dbRecord.StartTime = startTime;
 
             var TimerValues = new TimerHistory()
             {
+                Id = id,
                 StartTime = startTime,
                 FinishTime = finishtTime
             };
-            Context.Update(TimerValues);
+            //Context.TimerHistories.Single(timerHistory => timerHistory.Id == id).FinishTime = finishtTime;
+
+            //Context.Update(TimerValues);
+            Context.SaveChanges();
+
+            return TimerValues;
+        }
+        public TimerHistory DeteleTimerValue(int id)
+        {
+            var dbRecord = Context.TimerHistories.Single(timerHistory => timerHistory.Id == id);
+
+            Context.Remove(dbRecord);
+
+            var TimerValues = new TimerHistory()
+            {
+                Id = id,
+                StartTime = dbRecord.StartTime,
+                FinishTime = dbRecord.FinishTime
+            };
+            //Context.TimerHistories.Single(timerHistory => timerHistory.Id == id).FinishTime = finishtTime;
+
+            //Context.Update(TimerValues);
             Context.SaveChanges();
 
             return TimerValues;

@@ -47,18 +47,37 @@ namespace Scheduling.GraphQl
                 description: "Add start time"
             );
 
+
             Field<TimerHistoryType>(
-                "addTimerFinishValue",
+                "editTimerFinishValue",
                 arguments: new QueryArguments(
-                    new QueryArgument<NonNullGraphType<DateTimeGraphType>> { Name = "StartTime", Description = "Timer began" },
-                    new QueryArgument<NonNullGraphType<DateTimeGraphType>> { Name = "FinishTime", Description = "Timer finished"}
+                    new QueryArgument<DateTimeGraphType> { Name = "StartTime", Description = "Timer started" },
+                    new QueryArgument<DateTimeGraphType> { Name = "FinishTime", Description = "Timer finished" },
+                    new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "id", Description = "Edit Timer finished" }
                 ),
                 resolve: context =>
                 {
-                    DateTime startTime = context.GetArgument<DateTime>("StartTime");
-                    DateTime finishTime = (DateTime)context.GetArgument<DateTime?>("FinishTime");
+                    DateTime startTime = (DateTime)context.GetArgument<DateTime>("StartTime");
+                    DateTime finishTime = (DateTime)context.GetArgument<DateTime>("FinishTime");
 
-                    return userRepository.AddTimerFinishValue(startTime, finishTime);   
+
+                    int id = context.GetArgument<int>("id");
+
+                    return userRepository.EditTimerValue(id, startTime, finishTime);
+                },
+                description: "Update value: added finish time"
+            );
+            Field<TimerHistoryType>(
+                "deleteTimerFinishValue",
+                arguments: new QueryArguments(
+                    new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "id", Description = "Edit Timer finished" }
+                ),
+                resolve: context =>
+                {
+
+                    int id = context.GetArgument<int>("id");
+
+                    return userRepository.DeteleTimerValue(id);
                 },
                 description: "Update value: added finish time"
             );
