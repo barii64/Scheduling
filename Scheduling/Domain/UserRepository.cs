@@ -65,7 +65,7 @@ namespace Scheduling.Domain
 
             foreach (UserTimerHistory userTimerHistory in userTimerHistories)
             {
-                timerHistories.Add(Context.TimerHistories.Single(timerHistory => timerHistory.Id == userTimerHistory.TimerHistoryId));
+                timerHistories.Add(Context.TimerHistories.SingleOrDefault(timerHistory => timerHistory.Id == userTimerHistory.TimerHistoryId));
             }
             return timerHistories;
         }
