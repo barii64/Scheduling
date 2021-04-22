@@ -5,7 +5,6 @@ import { UserState } from "./types";
 
 const reducer: Reducer<UserState> = (state: UserState | undefined, incomingAction: Action): UserState => {
 	if (state === undefined) {
-		 
 			return { logged: false, token: null, user: null };
 	}
 

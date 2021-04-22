@@ -6,10 +6,12 @@ import UserReducer from "./User/";
 import RequestReducer from "./VacationRequest/";
 import { UserState } from './User/types';
 import { VacationRequestState } from './VacationRequest/types';
+import { TimerHistoryState } from './Timer/types';
 
 export interface ApplicationState {
     loggedUser: UserState | undefined;
     vacationRequest: VacationRequestState | undefined;
+    timerHistory: TimerHistoryState | undefined;
 };
 
 

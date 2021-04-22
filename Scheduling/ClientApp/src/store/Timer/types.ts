@@ -1,7 +1,7 @@
-export interface VacationRequestState {
+export interface TimerHistoryState {
 	logged: boolean,
 	token: string | null,
-	requestHistory: Array<TimerType>
+	timerHistory: Array<TimerType>
 }
 
 export type TimerType = {

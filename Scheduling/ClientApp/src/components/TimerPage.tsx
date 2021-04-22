@@ -4,15 +4,17 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { connect } from 'react-redux';
 import { Redirect, RouteComponentProps } from 'react-router';
 import { ApplicationState } from '../store/configureStore';
-import{ VacationRequestState } from '../store/VacationRequest/types';
+import { TimerHistoryState } from '../store/Timer/types';
 import '../style/VacationRequest.css';
 import { actionCreators } from '../store/Timer/actions';
 import { RequestsTable } from './RequestsTable';
 import { useState } from 'react';
 import { TimerHistoryTable } from './TimerHistoryTable';
 import Timer from "../containers/TimerContainer"
-type VacationRequestProps =
-    VacationRequestState &
+import Cookies from 'js-cookie';
+import { getUserData, getUserTimerData } from '../webAPI/user';
+type TimerHistoryProps =
+    TimerHistoryState &
     typeof actionCreators &
     RouteComponentProps<{}>;
 
@@ -73,13 +75,24 @@ const DatePanel = () => {
         />
     );
 }
-class TimerPage extends React.PureComponent<VacationRequestProps>{
+class TimerPage extends React.PureComponent<TimerHistoryProps>{
     handleSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
       }
 
     async componentDidMount(){
-        this.props.checkUser();
+        const token = Cookies.get('token');
+
+        if (token) {
+            const data = await getUserTimerData(token);
+            console.log(data.data.getUser.timerHistories[0]);
+            if (data.data) {
+                console.log(this.props.setTimerHistory(data.data.getUser.timerHistories[0]));
+                console.log(this.props);
+                return;
+            }
+        }
+
     }
 
     public render(){
@@ -89,7 +102,7 @@ class TimerPage extends React.PureComponent<VacationRequestProps>{
                     <main>
                         <h2>Timer</h2>
                         <div id='vacation-container'>
-                            <TimerHistoryTable requests={this.props.requestHistory} />
+                            <TimerHistoryTable requests={this.props.timerHistory} />
                             <DatePanel />
                             <div id='vacation-info'>
                                 <div className='time-tracker'>
@@ -105,7 +118,6 @@ class TimerPage extends React.PureComponent<VacationRequestProps>{
         else{
             return <Redirect to='/'  />
         }
-        
     }
 };
 
