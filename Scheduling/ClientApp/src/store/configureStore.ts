@@ -4,6 +4,7 @@ import { connectRouter, routerMiddleware } from 'connected-react-router';
 import { History } from 'history';
 import UserReducer from "./User/";
 import RequestReducer from "./VacationRequest/";
+import TimerReducer from "./Timer/";
 import { UserState } from './User/types';
 import { VacationRequestState } from './VacationRequest/types';
 import { TimerHistoryState } from './Timer/types';
@@ -24,6 +25,7 @@ export default function configureStore(history: History, initialState?: Applicat
     const rootReducer = combineReducers({
         loggedUser: UserReducer,
         vacationRequest: RequestReducer,
+        timerHistory: TimerReducer,
         router: connectRouter(history)
     });
 

@@ -21,12 +21,13 @@ export const TimerHistoryTable: React.FunctionComponent<TableProps> = ({ request
                                 <th></th>
                             </tr>
                             {requests.map((r) => <tr key={requests.indexOf(r)}>
-                                <td>{(r.DateTimeStart).toDateString()}-{r.DateTimeFinish.toDateString()}</td>
+                                <td>{(new Date(r.startTime)).toLocaleTimeString()}-{(new Date(r.finishTime)).toLocaleTimeString()}</td>
                                 <td>{r.Time}</td>
 
                             </tr>)}
-                            <button id='send-request'>Add new item</button>
                         </tbody>
+                        <button id='send-request'>Add new item</button>
+
                     </table>
                 </div>
             </React.Fragment>)
@@ -35,7 +36,7 @@ export const TimerHistoryTable: React.FunctionComponent<TableProps> = ({ request
         return (
             <React.Fragment>
                 <div id='vacation-history'>
-                    <h5>Vacation history</h5>
+                    <h5>Timer history</h5>
                     <table id='history'>
                         <tbody>
                             <tr>

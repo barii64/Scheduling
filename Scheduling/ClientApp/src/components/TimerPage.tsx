@@ -85,11 +85,11 @@ class TimerPage extends React.PureComponent<TimerHistoryProps>{
 
         if (token) {
             const data = await getUserTimerData(token);
-            console.log(data.data.getUser.timerHistories[0]);
+            console.log(data.data.getUser.timerHistories);
             if (data.data) {
-                console.log(this.props.setTimerHistory(data.data.getUser.timerHistories[0]));
+                this.props.setTimerHistory(data.data.getUser.timerHistories);
+                console.log(this.props.timerHistory);
                 console.log(this.props);
-                return;
             }
         }
 
@@ -122,6 +122,6 @@ class TimerPage extends React.PureComponent<TimerHistoryProps>{
 };
 
 export default connect(
-    (state: ApplicationState) => state.vacationRequest,
+    (state: ApplicationState) => state.timerHistory,
     actionCreators
 )(TimerPage);

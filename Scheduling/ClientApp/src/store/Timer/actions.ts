@@ -1,11 +1,11 @@
 import { TimerType } from "./types";
 
-export interface SetHistoryAction { type: 'SET_TIMERHISTORY', requests: Array<TimerType> }
+export interface SetTimerHistoryAction { type: 'SET_TIMERHISTORY', requests: Array<TimerType> }
 export interface CheckUserAction { type: 'CHECK_USER' }
 export interface AddTimeAction { type: 'ADD_TIME', time: TimerType }
 export interface DeleteTimeAction { type: 'DELETE_TIME', time_idx: number }
 
-const setTimerHistory = (requests: Array<TimerType>) => ({ type: 'SET_TIMERHISTORY', requests: requests } as SetHistoryAction);
+const setTimerHistory = (requests: Array<TimerType>) => ({ type: 'SET_TIMERHISTORY', requests: requests } as SetTimerHistoryAction );
 const checkUser =  () => ({ type: 'CHECK_USER'} as CheckUserAction);
 
 const addTime = (time:TimerType) => ({
@@ -27,4 +27,4 @@ export const actionCreators = {
 	checkUser
 };
 
-export type KnownAction = SetHistoryAction | CheckUserAction | AddTimeAction | DeleteTimeAction;
+export type KnownAction = SetTimerHistoryAction  | CheckUserAction | AddTimeAction | DeleteTimeAction;

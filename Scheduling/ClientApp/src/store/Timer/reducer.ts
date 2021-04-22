@@ -16,18 +16,18 @@ const reducer: Reducer<TimerHistoryState> = (state: TimerHistoryState | undefine
 
 	const action = incomingAction as KnownAction;
 	switch (action.type) {
-			case 'SET_TIMERHISTORY':
+		case 'SET_TIMERHISTORY':
 				if(action.requests.length > 0){
 					console.log('set');
 					return { logged: state.logged, token: state.token, timerHistory: action.requests };
 				}
 			return { logged: state.logged, token: state.token, timerHistory: [] };
-			case 'CHECK_USER':
-				const token = Cookies.get('token');
-				if(token)
-					return { logged: true, token: token, timerHistory: [] };
-				else
-					return { logged: false, token: null, timerHistory: [] };
+		case 'CHECK_USER':
+			const token = Cookies.get('token');
+			if(token)
+				return { logged: true, token: token, timerHistory: [] };
+			else
+				return { logged: false, token: null, timerHistory: [] };
 		case 'ADD_TIME':
 			{
 				console.log("add Time");
